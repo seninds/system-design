@@ -15,7 +15,12 @@ From Wikipedia:
 
 ## Exploration
 
-### Business Requirements
+### Data Requirements
+
+_What size of destination URL do we plan to support?_
+
+Usual restriction in browser address bar is around 2048 symbols.
+In CDNs usual limits are in range of 8K -- 32K symbols.
 
 _Do we need to have possibility to edit stored destination URL?_
 
@@ -24,21 +29,61 @@ to have actual link to "today" meeting agenda by some human readable short link.
 In this case it'll be useful to have editable destination URL for some
 short URL like: `https://example.com/meeting_agenda`
 
-- Analytics
-- UTM presets
-- Redirect Options (for instance: by language, by country, by device)
-- Expiring or Permanent Storage
-- Short and Destination Links Relationship
-- Deep URLs support
-- Human readable links
+_Do we want to provide analytics? If yes, what kind of analytics do we want to provide?_
 
-### Security Requirements
+For instance, if our clients will use short links for their marketing campaigns or referral programs
+it could be convenient for them to have analytics info about clicks.
+The possible analytics could be: number of clicks, browser info, computer platform, geo locations.
+Analytics could be provide by adding `.info` to the short URL like `goo.gl` did.
+
+_Will we provide expiring or permanent storage for short and destination URLs?_
+
+We can keep pair of short and destination URLs for specified time.
+Or we can keep them for some time after the last click was registered.
+The alternative is to keep short and destination URLs permanently.
+
+_Will it possible to have several short URLs which will point to the same destination URL?_
+
+If we plan to have many posted duplicates of destination URLs and they are not editable
+maybe it makes sense to have 1-to-1 relationship. In this case we can return the same short URL
+for all users who will post the same destination one.
+
+### Biz Logic Requirements
+
+_Do we need to provide redirect options?_
+
+It's possible to provide redirect options by language, by country, by device.
+
+_Do we need to cleanup/replace UTM parameters in destination URLs?_
+
+For instance, if we want to provide some service for marketing it makes sense to
+offer possibility to update UTM parameters from predefined sets.
+
+_Do we need to support human readable short URLs?_
+
+It's possible to provide user to define what short URL will be for specified
+destination URL. In this case short URL won't generated automatically.
+
+### Operational Requirements
+
+_What GET rate do we expect to have to extract destination URL by short one?_
+_What POST rate do we expect to have to add new destination URLs to the service?_
+
+_What reliability do we expect from this service?_
+
+My assumption is that it should be highly reliable to get info (to not block the business of our clients).
+Discussion could be around how reliable it should be about adding new short links.
+
+### Security and Privacy Requirements
+
+_Do we need to have TLS support for our URL shortener service?_
+
+To improve our users privacy and safety we probably need to add TLS support.
 
 _Which URI schemes in destination URL do we need to support?_
 
-The standard practice is to not support such URI schemes like `data:` and `javascript:`
-to prevent XSS and session hijacking attacks.
-Other URI schemes such as `http`, `https`, `ftp`, `ftps`, `mailto`, etc are usually supported.
+Probably we need to filter some URI schemes like `data:` or `javasript:` to prevent
+XSS and session hijacking attacks.
 
 _Do we need to filter destination URLs by some bad-site screening services?_
 
@@ -49,23 +94,31 @@ if the source of destination URLs can be non-trusted.
 _Do we need to have "preview" function to show the destination URL by short URL?_
 
 To give opportunity for users to uncover the destination URL for the certain short one
-we can provide "preview" subdomain.
+we can provide "preview" function. For instance, by adding `.preview` at the end of a short URL.
 It make sense if the source of destination URL can be non-trusted.
 
-- SSL support
-- Authentication and Authorization (corporate usage; private info for maps as example)
-- Random salt in the short URL (to make harder to scan)
+_Do we need to provide authentication and authorization?_
 
-### Reliability Requirements
+For instance, for corporate usage if we want to restrict access to specified resources.
 
-_What reliability do we expect from this service?_
+_Do we want to add random part to generated short URLs?_
+_Do we want to have anti-robot functionality?_
+_Do we want to add throttling for identified high intensity users?_
 
-My assumption is that it should be highly reliable to get info (to not block the business of our clients).
-Discussion could be around how reliable it should be about adding new short links.
+Using backpressure, throttling, random part in generated short URLs we can
+complicate life of scanners to protect private info
+(e.g. some urls can contain info about location or search terms).
 
 ## Selected Use Cases
 
-# Use Case #1: TODO name
+1. Free URL Shortener to Collect Traffic Data for Sell
+1. Free URL Shortener to Provide Rich Analytics for Marketing
+1. Feature-Rich URL Shortener for Intra-Company Usage
+
+The difference in implementation between the first and the second use case
+are not too big. Therefore, I propose for further investigation the first and the last cases.
+
+# Use Case #1: Free URL Shortener to Collect Traffic Data for Sell
 
 ### Data Model
 
@@ -76,3 +129,5 @@ Discussion could be around how reliable it should be about adding new short link
 ### Trade-off Analysis
 
 ### Implementation Details
+
+# Use Case #2: Feature-Rich URL Shortener for Intra-Company Usage
