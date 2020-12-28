@@ -13,7 +13,7 @@ From Wikipedia:
 > is copying a URL from a print source, for making it easier for a person to remember,
 > or for the intention of a permalink.
 
-## Exploration
+# Exploration
 
 ### Data Requirements
 
@@ -67,6 +67,7 @@ destination URL. In this case short URL won't generated automatically.
 ### Operational Requirements
 
 _What GET rate do we expect to have to extract destination URL by short one?_
+
 _What POST rate do we expect to have to add new destination URLs to the service?_
 
 _What reliability do we expect from this service?_
@@ -102,7 +103,9 @@ _Do we need to provide authentication and authorization?_
 For instance, for corporate usage if we want to restrict access to specified resources.
 
 _Do we want to add random part to generated short URLs?_
+
 _Do we want to have anti-robot functionality?_
+
 _Do we want to add throttling for identified high intensity users?_
 
 Using backpressure, throttling, random part in generated short URLs we can
