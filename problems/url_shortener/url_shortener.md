@@ -114,12 +114,8 @@ complicate life of scanners to protect private info
 
 ## Selected Use Cases
 
-1. Free URL Shortener to Collect Traffic Data for Sell
-1. Free URL Shortener to Provide Rich Analytics for Marketing
+1. Free URL Shortener for Analytics and Traffic Data for Sale
 1. Feature-Rich URL Shortener for Intra-Company Usage
-
-The difference in implementation between the first and the second use case
-are not too big. Therefore, I propose for further investigation the first and the last cases.
 
 # Use Case #1: Free URL Shortener to Collect Traffic Data for Sell
 
