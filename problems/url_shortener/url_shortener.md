@@ -114,18 +114,120 @@ complicate life of scanners to protect private info
 
 ## Selected Use Cases
 
-1. Free URL Shortener for Analytics and Traffic Data for Sale
+1. Free URL Shortener with Analytics and Traffic Data for Sale
 1. Feature-Rich URL Shortener for Intra-Company Usage
 
-# Use Case #1: Free URL Shortener to Collect Traffic Data for Sell
+# Use Case #1: Free URL Shortener with Analytics and Traffic Data for Sale
+
+In this use case potential business model could consist from 2 parts:
+
+1. Sell analytics for URL owners
+1. Sell traffic data for marketing agencies
+
+It means that we need to focus on providing high quality post-processing of collected traffic data.
+Service should be convenient for people who create short URLs, but this is not our business.
+If the absence of some feature won't lead to reduce amount of traffic we don't have to implement this feature.
 
 ### Data Model
 
+Data model consist from the parts below:
+
+1. URL data (short_url, dest_url, user_id, created_at, clicked_at)
+1. Cache data (short_url, dest_url)
+1. Traffic data: clicks, geo (country, region, city), language, browser, device
+1. Config data in CP storage
+
+Because of free model we probably will have a LOT of short URLs in our database (DB).
+That means we should select more short version of stored destination URLs: 2048 symbols max
+(usual browser address line limit).
+
+```
+CREATE TABLE IF NOT EXISTS users (
+    id INT NOT NULL AUTO_INCREMENT,
+    login VARCHAR(255) NOT NULL,
+    pw_hash VARCHAR(255) NOT NULL
+
+    PRIMARY KEY (id)
+) ENGINE=INNODB;
+
+CREATE TABLE IF NOT EXISTS urls (
+    short_url CHAR(9) NOT NULL,
+    dest_url VARCHAR(2048) NOT NULL,
+    user_id INT,
+    owner VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    clicked_at TIMESTAMP,
+
+    PRIMARY KEY (short_url),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+)  ENGINE=INNODB;
+```
+
+**TODO: cache data**
+**TODO: traffic data**
+**TODO: config data**
+
 ### Quantitative Analysis
+
+Let's suppose that the common place for exchanging such short URLs is social networks and chats.
+Let's assume that in Facebook + Instagram + WhatsApp we have about 3 billion of daily active users (DAU).
+
+Below I collected assumptions for further calculations:
+
+1. About creating short URLs
+   1. 1% of DAU are active content generators
+   1. Each active content generator write about 10 posts per day
+   1. In 10% of these posts active content generator use 1 new short URL
+1. About reading destination URLs
+   1. 99% of DAU are passive readers
+   1. Each passive reader has about 1000 friends+groups in average.
+   1. Passive readers read only 10% of generated posts
+   1. Passive readers click on 10% of links in read posts
+1. About spikes
+   1. Some celebrities could have up to 100 million subscribers
+   1. 10% of celebrities subscribers are read their posts in the first hour
+   1. Celebrities subscribers usually click on 10% of links in read posts
+
+All calculations below will in units per second.
+
+```
+sec_per_hour = 60 * 60 = 3600
+sec_per_day = 24 * sec_per_hour = 86400
+
+POST requests:
+==============
+generated_posts = DAU * %_active_content_generators * posts_per_day / sec_per_day
+generated_posts = 3 * 10^9 * 0.01 * 10 / 86400 = 3472 [posts / sec]
+
+new_short_urls = generated_posts * %_posts_with_new_short_url
+new_short_urls = 3472 * 0.1 = 347 [urls / sec]
+new_short_urls = 347 * sec_per_day * 356  ~ 11 * 10^9 [urls / year]
+
+GET requests (avg rate):
+========================
+read_posts = DAU * %_passive_readers * avg_#_of_friends * %_active_content_generators * posts_per_day / sec_per_day
+read_posts = 3 * 10^9 * 0.99 * 1000 * 0.01 * 10 / 86400 = 3437500 [posts / sec]
+
+read_dest_urls = read_posts * %_posts_with_new_short_url * %_clicks_in_read_posts
+read_dest_urls = 3437500 * 0.1 * 0.1 = 34375 [urls / sec]
+
+GET requests (spike for 1 url):
+===============================
+read_dest_url = #_celebrity_subscribers * %_subscribers_read_in_1st_hour / sec_per_hour
+read_dest_url = 100 * 10^6 * 0.1 / 3600 = 2778 [read / sec]
+```
+
+Because we estimated the amount of used short URLs per year in 11 _ 10^9
+it means that we can choose 7 symbols for short URL: 62 ^ 7 / (11 _ 10^9) ~ 320 years.
+So it'll take about 320 years to exhaust all short URLs in this service.
 
 ### Component Decomposition
 
 ### Trade-off Analysis
+
+Size of random part in short URL
+TTL in cache vs number of replicas in DB
+Granulation of acquired ranges in CP storage
 
 ### Implementation Details
 
