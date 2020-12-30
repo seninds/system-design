@@ -133,42 +133,59 @@ complicate life of scanners to protect private info
 
 # Use Case #1: URL Shortener with Analytics and Traffic Data for Sale
 
-In this use case potential business model could consist from 2 parts:
+In this use case potential business model could be the following.
+Provide free service to create short URL for certain destination URL, but
 
 1. Sell analytics for URL owners
 1. Sell traffic data for marketing agencies
 
 It means that we need to focus on providing high quality post-processing of collected traffic data.
-Service should be convenient for people who create short URLs, but this is not our business.
-If the absence of some feature won't lead to reduce amount of traffic we don't have to implement this feature.
+Service should be convenient for people who create short URLs, but this is not the main part of our business.
+If an absence of some feature won't lead to reduce amount of traffic we don't have to implement this feature.
 
 ## Data Model
 
-Data model consist from the parts below:
+Data model consists from the parts below:
 
-1. URL data (short_url, dest_url, user_id, created_at, clicked_at)
-1. Cache data (short_url, dest_url)
-1. Traffic data: clicks, geo (country, region, city), language, browser, device
+1. URL data and User data
+1. Cache data
+1. Traffic data
 1. Config data in CP storage
 
-Because of free model we probably will have a LOT of short URLs in our database (DB).
-That means we should select more short version of stored destination URLs: 2048 symbols max
+### URL data and User data
+
+Because of free model we probably will have a LOT of pairs short/dest URLs in our database.
+That means we should select shorter version of stored destination URLs: 2048 symbols max
 (usual browser address line limit).
 
+For short URLs I plan to use 62-based alphabet:
+
+```c++
+char alphabet[62] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 ```
+
+For short URLs we could use 7 ordered symbols (specified by counter) and
+2 random ones (to complicate life for scanners).
+Because we plan to use 62-based alphabet it means that the maximum number
+of short URLs to create is `62^7 ~ 3.5E12`. With RPS about 10K to create a new short URL
+it will take more than 10 years to exhaust this range. Looks pretty enough.
+
+```
+# Record size: 4 + 256 + 64 + 64 = 388 bytes
 CREATE TABLE IF NOT EXISTS users (
     id INT NOT NULL AUTO_INCREMENT,
     login VARCHAR(255) NOT NULL,
-    pw_hash VARCHAR(255) NOT NULL
+    pw_hash CHAR(64) NOT NULL,
+    salt CHAR(64) NOT NULL,
 
     PRIMARY KEY (id)
 ) ENGINE=INNODB;
 
+# Record size: 9 + 2050 + 4 + 4 + 4 = 2071 bytes
 CREATE TABLE IF NOT EXISTS urls (
     short_url CHAR(9) NOT NULL,
     dest_url VARCHAR(2048) NOT NULL,
     user_id INT,
-    owner VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     clicked_at TIMESTAMP,
 
@@ -177,7 +194,15 @@ CREATE TABLE IF NOT EXISTS urls (
 )  ENGINE=INNODB;
 ```
 
-**TODO: cache data**
+_TODO: think about table for session tokens_
+
+### Cache Data
+
+In cache I plan to store pair of short and corresponding destination URLs.
+So the max possible size of 1 record in the cache could be 2048 + 9 = 2057 bytes.
+
+_TODO: think about cache for session tokens_
+
 **TODO: traffic data**
 **TODO: config data**
 
@@ -231,8 +256,8 @@ read_dest_url = #_celebrity_subscribers * %_subscribers_read_in_1st_hour / sec_p
 read_dest_url = 100 * 10^6 * 0.1 / 3600 = 2778 [read / sec]
 ```
 
-Because we estimated the amount of used short URLs per year in 11 _ 10^9
-it means that we can choose 7 symbols for short URL: 62 ^ 7 / (11 _ 10^9) ~ 320 years.
+Because we estimated the amount of used short URLs per year in 11E9
+it means that we can choose 7 symbols for short URL: `62 ^ 7 / 11E9 ~ 320 years`.
 So it'll take about 320 years to exhaust all short URLs in this service.
 
 ## Component Decomposition
