@@ -198,8 +198,8 @@ _TODO: think about table for session tokens_
 
 ### Cache Data
 
-In cache I plan to store pair of short and corresponding destination URLs.
-So the max possible size of 1 record in the cache could be 2048 + 9 = 2057 bytes.
+In cache I plan to store pairs of short and corresponding destination URLs.
+So the max possible size of 1 record in the cache could be: `2048 + 9 = 2057 bytes`.
 
 _TODO: think about cache for session tokens_
 
