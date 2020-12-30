@@ -14,40 +14,55 @@
 
 # Exploration
 
-### Data Requirements
+## Data Requirements
 
-_What size of destination URL do we plan to support?_
+<details>
+  <summary>What size of destination URL do we plan to support?</summary>
 
 Usual restriction in browser address bar is around 2048 symbols.
 In CDNs usual limits are in range of 8K -- 32K symbols.
 
-_Do we need to have possibility to edit stored destination URL?_
+</details>
+
+<details>
+   <summary>Do we need to have possibility to edit stored destination URL?</summary>
 
 For example, if the targeted market is corporate clients and we want to give them ability
 to have actual link to "today" meeting agenda by some human readable short link.
 In this case it'll be useful to have editable destination URL for some
 short URL like: `https://example.com/meeting_agenda`
 
-_Do we want to provide analytics? If yes, what kind of analytics do we want to provide?_
+</details>
+
+<details>
+   <summary>Do we want to provide analytics? If yes, what kind of analytics do we want to provide?</summary>
 
 For instance, if our clients will use short links for their marketing campaigns or referral programs
 it could be convenient for them to have analytics info about clicks.
 The possible analytics could be: number of clicks, browser info, computer platform, geo locations.
 Analytics could be provide by adding `.info` to the short URL like `goo.gl` did.
 
-_Will we provide expiring or permanent storage for short and destination URLs?_
+</details>
+
+<details>
+   <summary>Will we provide expiring or permanent storage for short and destination URLs?</summary>
 
 We can keep pair of short and destination URLs for specified time.
 Or we can keep them for some time after the last click was registered.
 The alternative is to keep short and destination URLs permanently.
 
-_Will it possible to have several short URLs which will point to the same destination URL?_
+</details>
+
+<details>
+   <summary>Will it possible to have several short URLs which will point to the same destination URL?</summary>
 
 If we plan to have many posted duplicates of destination URLs and they are not editable
 maybe it makes sense to have 1-to-1 relationship. In this case we can return the same short URL
 for all users who will post the same destination one.
 
-### Biz Logic Requirements
+</details>
+
+## Biz Logic Requirements
 
 _Do we need to provide redirect options?_
 
@@ -63,7 +78,7 @@ _Do we need to support human readable short URLs?_
 It's possible to provide user to define what short URL will be for specified
 destination URL. In this case short URL won't generated automatically.
 
-### Operational Requirements
+## Operational Requirements
 
 _What GET rate do we expect to have to extract destination URL by short one?_
 
@@ -74,7 +89,7 @@ _What reliability do we expect from this service?_
 My assumption is that it should be highly reliable to get info (to not block the business of our clients).
 Discussion could be around how reliable it should be about adding new short links.
 
-### Security and Privacy Requirements
+## Security and Privacy Requirements
 
 _Do we need to have TLS support for our URL shortener service?_
 
@@ -113,10 +128,10 @@ complicate life of scanners to protect private info
 
 ## Selected Use Cases
 
-1. Free URL Shortener with Analytics and Traffic Data for Sale
+1. URL Shortener with Analytics and Traffic Data for Sale
 1. Feature-Rich URL Shortener for Intra-Company Usage
 
-# Use Case #1: Free URL Shortener with Analytics and Traffic Data for Sale
+# Use Case #1: URL Shortener with Analytics and Traffic Data for Sale
 
 In this use case potential business model could consist from 2 parts:
 
@@ -127,7 +142,7 @@ It means that we need to focus on providing high quality post-processing of coll
 Service should be convenient for people who create short URLs, but this is not our business.
 If the absence of some feature won't lead to reduce amount of traffic we don't have to implement this feature.
 
-### Data Model
+## Data Model
 
 Data model consist from the parts below:
 
@@ -166,7 +181,7 @@ CREATE TABLE IF NOT EXISTS urls (
 **TODO: traffic data**
 **TODO: config data**
 
-### Quantitative Analysis
+## Quantitative Analysis
 
 Let's suppose that the common place for exchanging such short URLs is social networks and chats.
 Let's assume that in Facebook + Instagram + WhatsApp we have about 3 billion of daily active users (DAU).
@@ -220,14 +235,14 @@ Because we estimated the amount of used short URLs per year in 11 _ 10^9
 it means that we can choose 7 symbols for short URL: 62 ^ 7 / (11 _ 10^9) ~ 320 years.
 So it'll take about 320 years to exhaust all short URLs in this service.
 
-### Component Decomposition
+## Component Decomposition
 
-### Trade-off Analysis
+## Trade-off Analysis
 
 Size of random part in short URL
 TTL in cache vs number of replicas in DB
 Granulation of acquired ranges in CP storage
 
-### Implementation Details
+## Implementation Details
 
 # Use Case #2: Feature-Rich URL Shortener for Intra-Company Usage
