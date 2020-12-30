@@ -170,7 +170,7 @@ Because we plan to use 62-based alphabet it means that the maximum number
 of short URLs to create is `62^7 ~ 3.5E12`. With RPS about 10K to create a new short URL
 it will take more than 10 years to exhaust this range. Looks pretty enough.
 
-```
+```sql
 # Record size: 4 + 256 + 64 + 64 = 388 bytes
 CREATE TABLE IF NOT EXISTS users (
     id INT NOT NULL AUTO_INCREMENT,
