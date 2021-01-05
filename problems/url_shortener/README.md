@@ -16,122 +16,48 @@
 
 ## Data Requirements
 
-<details>
-  <summary>What size of destination URL do we plan to support?</summary>
-
-Usual restriction in browser address bar is around 2048 symbols.
-In CDNs usual limits are in range of 8K -- 32K symbols.
-
-</details>
-
-<details>
-   <summary>Do we need to have possibility to edit stored destination URL?</summary>
-
-For example, if the targeted market is corporate clients and we want to give them ability
-to have actual link to "today" meeting agenda by some human readable short link.
-In this case it'll be useful to have editable destination URL for some
-short URL like: `https://example.com/meeting_agenda`
-
-</details>
-
-<details>
-   <summary>Do we want to provide analytics? If yes, what kind of analytics do we want to provide?</summary>
-
-For instance, if our clients will use short links for their marketing campaigns or referral programs
-it could be convenient for them to have analytics info about clicks.
-The possible analytics could be: number of clicks, browser info, computer platform, geo locations.
-Analytics could be provide by adding `.info` to the short URL like `goo.gl` did.
-
-</details>
-
-<details>
-   <summary>Will we provide expiring or permanent storage for short and destination URLs?</summary>
-
-We can keep pair of short and destination URLs for specified time.
-Or we can keep them for some time after the last click was registered.
-The alternative is to keep short and destination URLs permanently.
-
-</details>
-
-<details>
-   <summary>Will it possible to have several short URLs which will point to the same destination URL?</summary>
-
-If we plan to have many posted duplicates of destination URLs and they are not editable
-maybe it makes sense to have 1-to-1 relationship. In this case we can return the same short URL
-for all users who will post the same destination one.
-
-</details>
+- What size of destination URL do we plan to support?
+- Do we need to have possibility to edit stored destination URLs?
+- Do we want to provide analytics based on traffic data? What kind of analytics?
+- Do we provide expiring or permanent storage for shorten URLs?
+- Which relationships are between short and destination URLs: 1:1 or N:1?
 
 ## Biz Logic Requirements
 
-_Do we need to provide redirect options?_
-
-It's possible to provide redirect options by language, by country, by device.
-
-_Do we need to cleanup/replace UTM parameters in destination URLs?_
-
-For instance, if we want to provide some service for marketing it makes sense to
-offer possibility to update UTM parameters from predefined sets.
-
-_Do we need to support human readable short URLs?_
-
-It's possible to provide user to define what short URL will be for specified
-destination URL. In this case short URL won't generated automatically.
+- Do we need to provide redirect options based on language, country or platform info?
+- Do we need to support human readable short URLs which are setup manually?
 
 ## Operational Requirements
 
-_What GET rate do we expect to have to extract destination URL by short one?_
-
-_What POST rate do we expect to have to add new destination URLs to the service?_
-
-_What reliability do we expect from this service?_
-
-My assumption is that it should be highly reliable to get info (to not block the business of our clients).
-Discussion could be around how reliable it should be about adding new short links.
+- What GET rate do we expect to have to extract destination URL by short one?
+- What POST rate do we expect to have to add new destination URLs to the service?
+- What reliability do we expect from this service on GET and POST?
+- Do we need to add back-pressure mechanism to improve reliability?
 
 ## Security and Privacy Requirements
 
-_Do we need to have TLS support for our URL shortener service?_
+- Do we need to have TLS support for our URL shortener service?
+- Which URI schemes in destination URL do we need to support?
+- Do we need to filter destination URLs by some bad-site screening services?
+- Do we need to have "preview" function to show the destination URL by short URL?
+- Do we need to provide user authentication and authorization for some URLs?
+- Do we need to add random part to generated short URLs to prevent easy scanning?
+- Do we need to have anti-robot functionality?
 
-To improve our users privacy and safety we probably need to add TLS support.
+## Proposed Use Cases
 
-_Which URI schemes in destination URL do we need to support?_
+It looks like we have 2 main use cases:
 
-Probably we need to filter some URI schemes like `data:` or `javasript:` to prevent
-XSS and session hijacking attacks.
-
-_Do we need to filter destination URLs by some bad-site screening services?_
-
-Unfortunately url shorteners often are used by spammers and scammers.
-To prevent such usage it makes sense to have some filtration mechanism
-if the source of destination URLs can be non-trusted.
-
-_Do we need to have "preview" function to show the destination URL by short URL?_
-
-To give opportunity for users to uncover the destination URL for the certain short one
-we can provide "preview" function. For instance, by adding `.preview` at the end of a short URL.
-It make sense if the source of destination URL can be non-trusted.
-
-_Do we need to provide authentication and authorization?_
-
-For instance, for corporate usage if we want to restrict access to specified resources.
-
-_Do we want to add random part to generated short URLs?_
-
-_Do we want to have anti-robot functionality?_
-
-_Do we want to add throttling for identified high intensity users?_
-
-Using backpressure, throttling, random part in generated short URLs we can
-complicate life of scanners to protect private info
-(e.g. some urls can contain info about location or search terms).
-
-## Selected Use Cases
-
-1. URL Shortener with Analytics and Traffic Data for Sale
+1. URL Shortener with Traffic Data Analysis:
+   - free to use URL shortener
+   - collect traffic data
+   - sell analytics to customers
 1. Feature-Rich URL Shortener for Intra-Company Usage
+   - paid version of URL shortener
+   - rich feature set
+   - resource management (e.g. authentication and authorization)
 
-# Use Case #1: URL Shortener with Analytics and Traffic Data for Sale
+# Use Case #1: URL Shortener with Traffic Data Analysis
 
 In this use case potential business model could be the following.
 Provide free service to create short URL for certain destination URL, but
