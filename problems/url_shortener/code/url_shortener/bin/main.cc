@@ -9,12 +9,21 @@ using json = nlohmann::json;
 
 constexpr char kProgramName[] = "URL Shortener";
 
-cxxopts::Options MakeOptions() {
-    cxxopts::Options options(kProgramName, "Service to shorten long URLs.");
+auto ParseOptions(int argc, char** argv) {
+    using namespace cxxopts;
+    Options options(kProgramName, "Service to shorten long URLs.");
+
     auto adder = options.add_options();
-    adder("c,config", "config path", cxxopts::value<std::string>()->default_value("/dev/stdin"));
+    adder("c,config", "config path", value<std::string>()->default_value("/dev/stdin"));
     adder("h,help", "print help message");
-    return options;
+
+    auto result = options.parse(argc, argv);
+    if (result.count("help")) {
+        std::cout << options.help() << std::endl;
+        exit(0);
+    }
+
+    return result;
 }
 
 json ReadConfig(const std::string& path, bool print_result = false) {
@@ -30,15 +39,9 @@ json ReadConfig(const std::string& path, bool print_result = false) {
 }
 
 int main(int argc, char** argv) {
-    auto options = MakeOptions();
-    auto result = options.parse(argc, argv);
+    auto parsedOptions = ParseOptions(argc, argv);
 
-    if (result.count("help")) {
-        std::cout << options.help() << std::endl;
-        exit(0);
-    }
-
-    auto config_path = result["config"].as<std::string>();
+    auto config_path = parsedOptions["config"].as<std::string>();
     std::cout << "Run " << kProgramName << " with config: " << config_path << std::endl;
     auto config = ReadConfig(config_path, /* print_result */ true);
 
