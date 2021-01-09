@@ -1,10 +1,10 @@
 #pragma once
 
-#include <absl/status/status.h>
-#include <absl/status/statusor.h>
-
-#include <nlohmann/json.hpp>
 #include <string>
+
+#include "absl/status/status.h"
+#include "absl/status/statusor.h"
+#include "nlohmann/json.hpp"
 
 namespace us {
 
@@ -19,6 +19,8 @@ struct ICacheStorage {
     virtual absl::Status Write(const std::string& key, Record record) = 0;
 };
 
-std::unique_ptr<ICacheStorage> MakeCacheStorage(nlohmann::json::object& config);
+std::unique_ptr<ICacheStorage> MakeCacheStorage(nlohmann::json::object& config) {
+    return std::unique_ptr{};
+}
 
 }  // namespace us

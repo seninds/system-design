@@ -1,9 +1,11 @@
 
-#include <cxxopts.hpp>
 #include <fstream>
 #include <iostream>
-#include <nlohmann/json.hpp>
 #include <string>
+
+#include "cxxopts.hpp"
+#include "inc/cache_storage.h"
+#include "nlohmann/json.hpp"
 
 using json = nlohmann::json;
 
@@ -39,11 +41,13 @@ json ReadConfig(const std::string& path, bool print_result = false) {
 }
 
 int main(int argc, char** argv) {
-    auto parsedOptions = ParseOptions(argc, argv);
+    auto parsed_options = ParseOptions(argc, argv);
 
-    auto config_path = parsedOptions["config"].as<std::string>();
+    auto config_path = parsed_options["config"].as<std::string>();
     std::cout << "Run " << kProgramName << " with config: " << config_path << std::endl;
     auto config = ReadConfig(config_path, /* print_result */ true);
+
+    auto cache = us::MakeCacheStorage(config["cache"]);
 
     return 0;
 }
