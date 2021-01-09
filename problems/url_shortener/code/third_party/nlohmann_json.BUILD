@@ -18,5 +18,5 @@ cc_library(
     name = "nlohmann_json",
     includes = ["include"],
     visibility = ["//visibility:public"],
-    deps = ["nlohmann_json_lib"],
+    deps = [":nlohmann_json_lib"],
 )
