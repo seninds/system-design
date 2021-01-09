@@ -42,3 +42,13 @@ http_archive(
         "https://github.com/nlohmann/json/archive/v3.9.1.tar.gz",
     ],
 )
+
+http_archive(
+    name = "com_github_jarro2783_cxxopts",
+    build_file = "//third_party:jarro2783_cxxopts.BUILD",
+    sha256 = "7021ce97f51a40f7fd3558da416ab6914b1d3f758ccf68a1e8734ad10b49b676",
+    strip_prefix = "cxxopts-2.2.1",
+    urls = [
+        "https://github.com/jarro2783/cxxopts/archive/v2.2.1.zip",
+    ],
+)
