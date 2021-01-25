@@ -1,6 +1,6 @@
 {
     "cache": {
-        "type": "in_process",
+        "type": "in_memory",
         "max_records_count": 32000
     }
 }

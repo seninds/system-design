@@ -8,9 +8,9 @@
 
 namespace us {
 
-struct InProcessCache : ICacheStorage {
+struct InMemoryCache : ICacheStorage {
     using Record = ICacheStorage::Record;
-    InProcessCache(size_t max_records_count) : max_records_count_(max_records_count) {}
+    InMemoryCache(size_t max_records_count) : max_records_count_(max_records_count) {}
 
     absl::StatusOr<Record> Read(const std::string& key) const override;
     absl::Status Write(const std::string& key, Record record) override;
