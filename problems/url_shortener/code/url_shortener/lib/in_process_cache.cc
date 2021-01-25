@@ -14,7 +14,7 @@ absl::StatusOr<ICacheStorage::Record> InProcessCache::Read(const std::string& ke
 
 absl::Status InProcessCache::Write(const std::string& key, ICacheStorage::Record record) {
     if (auto it = iters_.find(key); it != iters_.end()) {
-        it->second->record = record;
+        it->second->record = std::move(record);
         records_.splice(records_.end(), records_, it->second);
     } else {
         if (records_.size() >= max_records_count_) {
