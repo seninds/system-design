@@ -19,6 +19,7 @@ absl::Status InMemoryCache::Write(const std::string& key, ICacheStorage::Record 
     } else {
         if (records_.size() >= max_records_count_) {
             auto& item = records_.front();
+            std::cout << item.key << std::endl;
             iters_.erase(item.key);
             records_.pop_front();
         }
