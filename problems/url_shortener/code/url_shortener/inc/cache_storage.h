@@ -35,4 +35,8 @@ inline ICacheStorage::Record& ICacheStorage::Record::WithLongUrl(std::string url
     return *this;
 }
 
+inline bool operator==(const ICacheStorage::Record& a, const ICacheStorage::Record& b) {
+    return a.short_url == b.short_url and a.long_url == b.long_url;
+}
+
 }  // namespace us

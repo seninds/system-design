@@ -16,9 +16,6 @@ struct InMemoryCache : ICacheStorage {
     absl::Status Write(const std::string& key, Record record) override;
 
    private:
-    void Touch(const std::string& key);
-
-   private:
     struct ListItem {
         std::string key;
         Record record;

@@ -34,3 +34,16 @@ cc_library(
         "@com_google_absl//absl/strings",
     ],
 )
+
+cc_test(
+    name = "tests",
+    srcs = glob([
+        "tests/**/*.h",
+        "tests/**/*.cc",
+    ]),
+    copts = ["-Iexternal/com_google_googletest/include"],
+    deps = [
+        ":lib",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
