@@ -8,4 +8,6 @@
 
 1. J. Kreps, N. Narkhede, and J. Rao. Kafka : a Distributed Messaging System for Log Processing. 2011 ACM 978-1-4503-0652-2/11/06
 
+## Distributed Key-Value Stores
 
+1. Mike Burrows : The Chubby lock service for loosely-coupled distributed systems. OSDI, USENIX, 2006.
